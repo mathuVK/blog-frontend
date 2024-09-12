@@ -1,0 +1,38 @@
+/* BlogList.css */
+
+.blog-list {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .blog-post {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .blog-post:last-child {
+    border-bottom: none;
+  }
+  
+  .blog-post h2 {
+    color: #007bff;
+    margin-top: 0;
+  }
+  
+  .blog-post img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 10px 0;
+  }
+  
+  .blog-post p {
+    color: #555;
+  }
+  
