@@ -18,8 +18,11 @@ const DB_URI = process.env.MONGODB_URI;
 const CLIENT_URL = process.env.CLIENT_URL;
 
 // Middleware
-app.use(cors({ credentials: true, origin: CLIENT_URL }));
-app.options('*', cors({ origin: CLIENT_URL }));
+app.use(cors({
+    credentials: true,
+    origin: '*',  // Allow any origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // Allow specific methods
+}));
 app.use(express.json());
 app.use(cookieParser());
 
