@@ -7,25 +7,22 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-const fs = require('fs');
 
-// Define constants
-const app = express();
-const uploadMiddleware = multer({ dest: 'uploads/' });
+// Use memory storage for uploads
+const uploadMiddleware = multer({ storage: multer.memoryStorage() });
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const PORT = 4000;
 const DB_URI = process.env.MONGODB_URI; 
-const CLIENT_URL = process.env.CLIENT_URL
+const CLIENT_URL = process.env.CLIENT_URL;
 
 // Middleware
-app.use(cors({ credentials: true, origin: CLIENT_URL }));  // Use CLIENT_URL from .env
+app.use(cors({ credentials: true, origin: CLIENT_URL }));
 app.use(express.json());
 app.use(cookieParser());
-app.use('/uploads', express.static(__dirname + '/uploads'));
 
 // MongoDB Connection
-mongoose.set('strictQuery', false); // To suppress deprecation warning
+mongoose.set('strictQuery', false);
 mongoose.connect(DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -33,7 +30,7 @@ mongoose.connect(DB_URI, {
     .then(() => console.log('MongoDB connected successfully'))
     .catch((err) => {
         console.error('MongoDB connection error:', err);
-        process.exit(1); // Exit if database connection fails
+        process.exit(1);
     });
 
 // Register User
@@ -90,25 +87,21 @@ app.post('/logout', (req, res) => {
     res.cookie('token', '').json('Logged out');
 });
 
-// Create Post
+// Create Post (now using memory storage for file upload)
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-    const { originalname, path } = req.file;
-    const ext = originalname.split('.').pop();
-    const newPath = `${path}.${ext}`;
-    
-    fs.renameSync(path, newPath);
-
+    const { originalname } = req.file;
     const { token } = req.cookies;
+
     jwt.verify(token, secret, {}, async (err, info) => {
         if (err) return res.status(401).json('Token invalid');
-        
+
         const { title, summary, content } = req.body;
         try {
             const postDoc = await Post.create({
                 title,
                 summary,
                 content,
-                cover: newPath,
+                cover: originalname,  // Handle cover file (in memory)
                 author: info.id,
             });
             res.json(postDoc);
@@ -121,14 +114,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 // Update Post
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-    let newPath = null;
-    if (req.file) {
-        const { originalname, path } = req.file;
-        const ext = originalname.split('.').pop();
-        newPath = `${path}.${ext}`;
-        fs.renameSync(path, newPath);
-    }
-
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if (err) return res.status(401).json('Token invalid');
@@ -145,7 +130,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
                 title,
                 summary,
                 content,
-                cover: newPath ? newPath : postDoc.cover,
+                cover: req.file ? req.file.originalname : postDoc.cover,
             });
             res.json(postDoc);
         } catch (e) {
