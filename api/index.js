@@ -23,6 +23,10 @@ app.use(cors({
     origin: '*',  // Allow any origin
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // Allow specific methods
 }));
+
+
+
+
 app.use(express.json());
 app.use(cookieParser());
 
