@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
+const app = express(); // <-- Make sure this line is here
 
 // Use memory storage for uploads
 const uploadMiddleware = multer({ storage: multer.memoryStorage() });
