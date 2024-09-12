@@ -15,10 +15,11 @@ const uploadMiddleware = multer({ dest: 'uploads/' });
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 const PORT = 4000;
-const DB_URI = 'mongodb+srv://mathu:Mathu123@blogapp.ojl3m.mongodb.net/?retryWrites=true&w=majority&appName=BlogApp';
+const DB_URI = process.env.MONGODB_URI; 
+const CLIENT_URL = process.env.CLIENT_URL
 
 // Middleware
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ credentials: true, origin: CLIENT_URL }));  // Use CLIENT_URL from .env
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));

@@ -3,8 +3,10 @@ import {useEffect, useState} from "react";
 
 export default function IndexPage() {
   const [posts,setPosts] = useState([]);
+  const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
   useEffect(() => {
-    fetch('http://localhost:4000/post').then(response => {
+    fetch(`${SERVER_URL}/post`).then(response => {
       response.json().then(posts => {
         setPosts(posts);
       });

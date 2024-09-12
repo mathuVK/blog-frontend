@@ -5,9 +5,11 @@ import './Header.css'; // Import the CSS file for styling
 
 export default function Header() {
   const {setUserInfo,userInfo} = useContext(UserContext);
+  const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
 
   useEffect(() => {
-    fetch('http://localhost:4000/profile', {
+    fetch(`${SERVER_URL}/profile`, {
       credentials: 'include',
     }).then(response => {
       response.json().then(userInfo => {
@@ -17,7 +19,7 @@ export default function Header() {
   }, []);
 
   function logout() {
-    fetch('http://localhost:4000/logout', {
+    fetch(`${SERVER_URL}/logout`, {
       credentials: 'include',
       method: 'POST',
     });
