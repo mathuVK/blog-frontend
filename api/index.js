@@ -19,6 +19,7 @@ const CLIENT_URL = process.env.CLIENT_URL;
 
 // Middleware
 app.use(cors({ credentials: true, origin: CLIENT_URL }));
+app.options('*', cors({ origin: CLIENT_URL }));
 app.use(express.json());
 app.use(cookieParser());
 
